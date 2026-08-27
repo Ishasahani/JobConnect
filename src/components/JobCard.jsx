@@ -1,13 +1,24 @@
-function JobCard(props) {
+function JobCard({
+  title,
+  company,
+  location,
+  type,
+  isSaved,
+  onSave
+}) {
   return (
     <div className="job-card">
-      <h3>{props.title}</h3>
+      <h3>{title}</h3>
 
-      <p>{props.company}</p>
+      <p>{company}</p>
 
-      <p>📍 {props.location}</p>
+      <p>📍 {location}</p>
 
-      <p>💼 {props.type}</p>
+      <p>💼 {type}</p>
+
+      <button onClick={() => onSave(title)}>
+        {isSaved ? "❤️ Saved" : "🤍 Save Job"}
+      </button>
 
       <button>View Details</button>
     </div>

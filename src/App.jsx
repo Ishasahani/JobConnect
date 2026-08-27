@@ -1,3 +1,4 @@
+import { useState } from "react";
 import "./App.css";
 
 import Navbar from "./components/Navbar";
@@ -5,9 +6,23 @@ import JobCard from "./components/JobCard";
 import Footer from "./components/Footer";
 
 function App() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [savedJobs, setSavedJobs] = useState([]);
+
+  const toggleSaveJob = (jobTitle) => {
+  if (savedJobs.includes(jobTitle)) {
+    setSavedJobs(savedJobs.filter((job) => job !== jobTitle));
+  } else {
+    setSavedJobs([...savedJobs, jobTitle]);
+  }
+};
+
   return (
     <div>
       <Navbar />
+      <div className="saved-count">
+        ❤️ Saved Jobs: {savedJobs.length}
+      </div>
 
       <section className="hero">
         <h1>Find Your Dream Job</h1>
@@ -20,8 +35,10 @@ function App() {
           <input
             type="text"
             placeholder="Job title, skills or company"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
-
+      
           <input
             type="text"
             placeholder="Location"
@@ -29,6 +46,11 @@ function App() {
 
           <button>Search Jobs</button>
         </div>
+        {searchTerm && (
+         <p className="search-message">
+           Searching for: <strong>{searchTerm}</strong>
+         </p>
+        )}
       </section>
 
       <section className="jobs-section">
@@ -37,24 +59,30 @@ function App() {
         <div className="job-container">
 
           <JobCard
-            title="Frontend Developer"
-            company="ABC Technologies"
-            location="Ahmedabad"
-            type="Full Time"
+           title="Frontend Developer"
+           company="ABC Technologies"
+           location="Ahmedabad"
+           type="Full Time"
+           isSaved={savedJobs.includes("Frontend Developer")}
+           onSave={toggleSaveJob}
           />
 
           <JobCard
-            title="Python Developer"
-            company="XYZ Solutions"
-            location="Ahmedabad"
-            type="Full Time"
+           title="Python Developer"
+           company="XYZ Solutions"
+           location="Ahmedabad"
+           type="Full Time"
+           isSaved={savedJobs.includes("Python Developer")}
+           onSave={toggleSaveJob}
           />
 
           <JobCard
-            title="Java Developer"
-            company="Tech Solutions"
-            location="Remote"
-            type="Full Time"
+           title="Java Developer"
+           company="Tech Solutions"
+           location="Remote"
+           type="Full Time"
+           isSaved={savedJobs.includes("Java Developer")}
+           onSave={toggleSaveJob}
           />
 
         </div>
