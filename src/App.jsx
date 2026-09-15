@@ -1,3 +1,10 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import Home from "./pages/Home";
+import Jobs from "./pages/Jobs";
+import SavedJobs from "./pages/SavedJobs";
+import About from "./pages/About";
+
 import { useState, useEffect } from "react";
 import "./App.css";
 
@@ -62,80 +69,91 @@ function App() {
 }
 
 return (
+  <BrowserRouter>
+    <Navbar />
 
-    <div>
-      <Navbar />
-      <div className="saved-count">
-        ❤️ Saved Jobs: {savedJobs.length}
-      </div>
+    <Routes>
+      <Route path="/" element={
+        <div>
+          <div className="saved-count">
+            ❤️ Saved Jobs: {savedJobs.length}
+          </div>
 
-      <section className="hero">
-        <h1>Find Your Dream Job</h1>
+          <section className="hero">
+            <h1>Find Your Dream Job</h1>
 
-        <p>
-          Discover the right opportunity and build your career with JobConnect.
-        </p>
+            <p>
+              Discover the right opportunity and build your career with JobConnect.
+            </p>
 
-        <div className="search-box">
-          <input
-            type="text"
-            placeholder="Job title, skills or company"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-      
-          <input
-            type="text"
-            placeholder="Location"
-          />
+            <div className="search-box">
+              <input
+                type="text"
+                placeholder="Job title, skills or company"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
 
-          <button>Search Jobs</button>
+              <input
+                type="text"
+                placeholder="Location"
+              />
+
+              <button>Search Jobs</button>
+            </div>
+
+            {searchTerm && (
+              <p className="search-message">
+                Searching for: <strong>{searchTerm}</strong>
+              </p>
+            )}
+          </section>
+
+          <section className="jobs-section">
+            <h2>Popular Jobs</h2>
+
+            <div className="job-container">
+
+              <JobCard
+                title="Frontend Developer"
+                company="ABC Technologies"
+                location="Ahmedabad"
+                type="Full Time"
+                isSaved={savedJobs.includes("Frontend Developer")}
+                onSave={toggleSaveJob}
+              />
+
+              <JobCard
+                title="Python Developer"
+                company="XYZ Solutions"
+                location="Ahmedabad"
+                type="Full Time"
+                isSaved={savedJobs.includes("Python Developer")}
+                onSave={toggleSaveJob}
+              />
+
+              <JobCard
+                title="Java Developer"
+                company="Tech Solutions"
+                location="Remote"
+                type="Full Time"
+                isSaved={savedJobs.includes("Java Developer")}
+                onSave={toggleSaveJob}
+              />
+
+            </div>
+          </section>
         </div>
-        {searchTerm && (
-         <p className="search-message">
-           Searching for: <strong>{searchTerm}</strong>
-         </p>
-        )}
-      </section>
+      } />
 
-      <section className="jobs-section">
-        <h2>Popular Jobs</h2>
+      <Route path="/jobs" element={<Jobs />} />
+      <Route path="/saved-jobs" element={<SavedJobs />} />
+      <Route path="/about" element={<About />} />
+    </Routes>
 
-        <div className="job-container">
-
-          <JobCard
-           title="Frontend Developer"
-           company="ABC Technologies"
-           location="Ahmedabad"
-           type="Full Time"
-           isSaved={savedJobs.includes("Frontend Developer")}
-           onSave={toggleSaveJob}
-          />
-
-          <JobCard
-           title="Python Developer"
-           company="XYZ Solutions"
-           location="Ahmedabad"
-           type="Full Time"
-           isSaved={savedJobs.includes("Python Developer")}
-           onSave={toggleSaveJob}
-          />
-
-          <JobCard
-           title="Java Developer"
-           company="Tech Solutions"
-           location="Remote"
-           type="Full Time"
-           isSaved={savedJobs.includes("Java Developer")}
-           onSave={toggleSaveJob}
-          />
-
-        </div>
-      </section>
-
-      <Footer />
-    </div>
-  );
+    <Footer />
+  </BrowserRouter>
+);
 }
 
 export default App;
