@@ -134,3 +134,20 @@ button {
   margin-right: 8px;
   margin-bottom: 8px;
 }
+
+.loading-screen {
+  min-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.loading-screen h2 {
+  margin-bottom: 10px;
+}
+
+.loading-screen p {
+  color: #666;
+}

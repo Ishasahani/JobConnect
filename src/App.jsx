@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 
 import Navbar from "./components/Navbar";
@@ -8,6 +8,41 @@ import Footer from "./components/Footer";
 function App() {
   const [searchTerm, setSearchTerm] = useState("");
   const [savedJobs, setSavedJobs] = useState([]);
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+  const loadJobs = () => {
+    const jobData = [
+      {
+        id: 1,
+        title: "Frontend Developer",
+        company: "ABC Technologies",
+        location: "Ahmedabad",
+        type: "Full Time",
+      },
+      {
+        id: 2,
+        title: "Python Developer",
+        company: "XYZ Solutions",
+        location: "Ahmedabad",
+        type: "Full Time",
+      },
+      {
+        id: 3,
+        title: "Java Developer",
+        company: "Tech Solutions",
+        location: "Remote",
+        type: "Full Time",
+      },
+    ];
+
+    setJobs(jobData);
+    setLoading(false);
+  };
+
+  loadJobs();
+}, []);
 
   const toggleSaveJob = (jobTitle) => {
   if (savedJobs.includes(jobTitle)) {
@@ -17,7 +52,17 @@ function App() {
   }
 };
 
+ if (loading) {
   return (
+    <div className="loading-screen">
+      <h2>Loading JobConnect...</h2>
+      <p>Finding the latest job opportunities...</p>
+    </div>
+  );
+}
+
+return (
+
     <div>
       <Navbar />
       <div className="saved-count">
