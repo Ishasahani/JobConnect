@@ -5,7 +5,7 @@ import Jobs from "./pages/Jobs";
 import SavedJobs from "./pages/SavedJobs";
 import About from "./pages/About";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import "./App.css";
 
 import Navbar from "./components/Navbar";
@@ -17,6 +17,8 @@ function App() {
   const [savedJobs, setSavedJobs] = useState([]);
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const searchInputRef = useRef(null);
 
   useEffect(() => {
   const loadJobs = () => {
@@ -50,14 +52,19 @@ function App() {
 
   loadJobs();
 }, []);
+const filteredJobs = useMemo(() => {
+  return jobs.filter((job) =>
+    job.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+}, [jobs, searchTerm]);
 
-  const toggleSaveJob = (jobTitle) => {
+const toggleSaveJob = useCallback((jobTitle) => {
   if (savedJobs.includes(jobTitle)) {
     setSavedJobs(savedJobs.filter((job) => job !== jobTitle));
   } else {
     setSavedJobs([...savedJobs, jobTitle]);
   }
-};
+}, [savedJobs]);
 
  if (loading) {
   return (
@@ -88,6 +95,7 @@ return (
 
             <div className="search-box">
               <input
+                ref={searchInputRef}
                 type="text"
                 placeholder="Job title, skills or company"
                 value={searchTerm}
@@ -100,6 +108,11 @@ return (
               />
 
               <button>Search Jobs</button>
+
+              <button onClick={() => searchInputRef.current.focus()}>
+                Focus Search
+              </button>
+
             </div>
 
             {searchTerm && (
@@ -114,32 +127,19 @@ return (
 
             <div className="job-container">
 
-              <JobCard
-                title="Frontend Developer"
-                company="ABC Technologies"
-                location="Ahmedabad"
-                type="Full Time"
-                isSaved={savedJobs.includes("Frontend Developer")}
-                onSave={toggleSaveJob}
-              />
+              {filteredJobs.map((job) => (
+               <JobCard
+                 key={job.id}
+                 title={job.title}
+                 company={job.company}
+                 location={job.location}
+                 type={job.type}
+                 isSaved={savedJobs.includes(job.title)}
+                 onSave={toggleSaveJob}
+               />
+             ))}
 
-              <JobCard
-                title="Python Developer"
-                company="XYZ Solutions"
-                location="Ahmedabad"
-                type="Full Time"
-                isSaved={savedJobs.includes("Python Developer")}
-                onSave={toggleSaveJob}
-              />
-
-              <JobCard
-                title="Java Developer"
-                company="Tech Solutions"
-                location="Remote"
-                type="Full Time"
-                isSaved={savedJobs.includes("Java Developer")}
-                onSave={toggleSaveJob}
-              />
+              
 
             </div>
           </section>
