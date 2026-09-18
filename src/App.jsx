@@ -20,34 +20,18 @@ function App() {
 
   const searchInputRef = useRef(null);
 
-  useEffect(() => {
-  const loadJobs = () => {
-    const jobData = [
-      {
-        id: 1,
-        title: "Frontend Developer",
-        company: "ABC Technologies",
-        location: "Ahmedabad",
-        type: "Full Time",
-      },
-      {
-        id: 2,
-        title: "Python Developer",
-        company: "XYZ Solutions",
-        location: "Ahmedabad",
-        type: "Full Time",
-      },
-      {
-        id: 3,
-        title: "Java Developer",
-        company: "Tech Solutions",
-        location: "Remote",
-        type: "Full Time",
-      },
-    ];
+ useEffect(() => {
+  const loadJobs = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/jobs");
+      const data = await response.json();
 
-    setJobs(jobData);
-    setLoading(false);
+      setJobs(data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error loading jobs:", error);
+      setLoading(false);
+    }
   };
 
   loadJobs();
