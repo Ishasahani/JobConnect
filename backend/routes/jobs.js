@@ -42,4 +42,44 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.put("/:id", async (req, res) => {
+  try {
+    const updatedJob = await Job.findByIdAndUpdate(
+      req.params.id,
+      {
+        title: req.body.title,
+        company: req.body.company,
+        location: req.body.location,
+        type: req.body.type,
+      },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedJob) {
+      return res.status(404).json({ message: "Job not found" });
+    }
+
+    res.json(updatedJob);
+  } catch (error) {
+    res.status(500).json({ message: "Error updating job" });
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  try {
+    const deletedJob = await Job.findByIdAndDelete(req.params.id);
+
+    if (!deletedJob) {
+      return res.status(404).json({ message: "Job not found" });
+    }
+
+    res.json({
+      message: "Job deleted successfully",
+      job: deletedJob,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting job" });
+  }
+});
+
 module.exports = router;
