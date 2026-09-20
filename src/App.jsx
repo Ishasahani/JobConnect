@@ -20,124 +20,127 @@ function App() {
 
   const searchInputRef = useRef(null);
 
- useEffect(() => {
-  const loadJobs = async () => {
-    try {
-      const response = await fetch("http://localhost:5000/api/jobs");
-      const data = await response.json();
+  useEffect(() => {
+    const loadJobs = async () => {
+      try {
+        const response = await fetch(
+          "https://jobconnect-backend2-zuf4.onrender.com/api/jobs"
+        );
 
-      setJobs(data);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error loading jobs:", error);
-      setLoading(false);
-    }
-  };
+        const data = await response.json();
 
-  loadJobs();
-}, []);
-const filteredJobs = useMemo(() => {
-  return jobs.filter((job) =>
-    job.title.toLowerCase().includes(searchTerm.toLowerCase())
+        setJobs(data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error loading jobs:", error);
+        setLoading(false);
+      }
+    };
+
+    loadJobs();
+  }, []);
+
+  const filteredJobs = useMemo(() => {
+    return jobs.filter((job) =>
+      job.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [jobs, searchTerm]);
+
+  const toggleSaveJob = useCallback(
+    (jobTitle) => {
+      if (savedJobs.includes(jobTitle)) {
+        setSavedJobs(savedJobs.filter((job) => job !== jobTitle));
+      } else {
+        setSavedJobs([...savedJobs, jobTitle]);
+      }
+    },
+    [savedJobs]
   );
-}, [jobs, searchTerm]);
 
-const toggleSaveJob = useCallback((jobTitle) => {
-  if (savedJobs.includes(jobTitle)) {
-    setSavedJobs(savedJobs.filter((job) => job !== jobTitle));
-  } else {
-    setSavedJobs([...savedJobs, jobTitle]);
+  if (loading) {
+    return (
+      <div className="loading-screen">
+        <h2>Loading JobConnect...</h2>
+        <p>Finding the latest job opportunities...</p>
+      </div>
+    );
   }
-}, [savedJobs]);
 
- if (loading) {
   return (
-    <div className="loading-screen">
-      <h2>Loading JobConnect...</h2>
-      <p>Finding the latest job opportunities...</p>
-    </div>
+    <BrowserRouter>
+      <Navbar />
+
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <div>
+              <div className="saved-count">
+                ❤️ Saved Jobs: {savedJobs.length}
+              </div>
+
+              <section className="hero">
+                <h1>Find Your Dream Job</h1>
+
+                <p>
+                  Discover the right opportunity and build your career with
+                  JobConnect.
+                </p>
+
+                <div className="search-box">
+                  <input
+                    ref={searchInputRef}
+                    type="text"
+                    placeholder="Job title, skills or company"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+
+                  <input type="text" placeholder="Location" />
+
+                  <button>Search Jobs</button>
+
+                  <button onClick={() => searchInputRef.current.focus()}>
+                    Focus Search
+                  </button>
+                </div>
+
+                {searchTerm && (
+                  <p className="search-message">
+                    Searching for: <strong>{searchTerm}</strong>
+                  </p>
+                )}
+              </section>
+
+              <section className="jobs-section">
+                <h2>Popular Jobs</h2>
+
+                <div className="job-container">
+                  {filteredJobs.map((job) => (
+                    <JobCard
+                      key={job._id}
+                      title={job.title}
+                      company={job.company}
+                      location={job.location}
+                      type={job.type}
+                      isSaved={savedJobs.includes(job.title)}
+                      onSave={toggleSaveJob}
+                    />
+                  ))}
+                </div>
+              </section>
+            </div>
+          }
+        />
+
+        <Route path="/jobs" element={<Jobs />} />
+        <Route path="/saved-jobs" element={<SavedJobs />} />
+        <Route path="/about" element={<About />} />
+      </Routes>
+
+      <Footer />
+    </BrowserRouter>
   );
-}
-
-return (
-  <BrowserRouter>
-    <Navbar />
-
-    <Routes>
-      <Route path="/" element={
-        <div>
-          <div className="saved-count">
-            ❤️ Saved Jobs: {savedJobs.length}
-          </div>
-
-          <section className="hero">
-            <h1>Find Your Dream Job</h1>
-
-            <p>
-              Discover the right opportunity and build your career with JobConnect.
-            </p>
-
-            <div className="search-box">
-              <input
-                ref={searchInputRef}
-                type="text"
-                placeholder="Job title, skills or company"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-
-              <input
-                type="text"
-                placeholder="Location"
-              />
-
-              <button>Search Jobs</button>
-
-              <button onClick={() => searchInputRef.current.focus()}>
-                Focus Search
-              </button>
-
-            </div>
-
-            {searchTerm && (
-              <p className="search-message">
-                Searching for: <strong>{searchTerm}</strong>
-              </p>
-            )}
-          </section>
-
-          <section className="jobs-section">
-            <h2>Popular Jobs</h2>
-
-            <div className="job-container">
-
-              {filteredJobs.map((job) => (
-                <JobCard
-                  key={job._id}
-                  title={job.title}
-                  company={job.company}
-                  location={job.location}
-                  type={job.type}
-                  isSaved={savedJobs.includes(job.title)}
-                  onSave={toggleSaveJob}
-               />
-            ))}
-
-              
-
-            </div>
-          </section>
-        </div>
-      } />
-
-      <Route path="/jobs" element={<Jobs />} />
-      <Route path="/saved-jobs" element={<SavedJobs />} />
-      <Route path="/about" element={<About />} />
-    </Routes>
-
-    <Footer />
-  </BrowserRouter>
-);
 }
 
 export default App;
