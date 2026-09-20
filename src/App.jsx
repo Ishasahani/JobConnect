@@ -112,16 +112,16 @@ return (
             <div className="job-container">
 
               {filteredJobs.map((job) => (
-               <JobCard
-                 key={job.id}
-                 title={job.title}
-                 company={job.company}
-                 location={job.location}
-                 type={job.type}
-                 isSaved={savedJobs.includes(job.title)}
-                 onSave={toggleSaveJob}
+                <JobCard
+                  key={job._id}
+                  title={job.title}
+                  company={job.company}
+                  location={job.location}
+                  type={job.type}
+                  isSaved={savedJobs.includes(job.title)}
+                  onSave={toggleSaveJob}
                />
-             ))}
+            ))}
 
               
 
